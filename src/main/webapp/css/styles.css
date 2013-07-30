@@ -1,0 +1,262 @@
+body 
+{
+    margin: 0px;
+    padding:0px;
+    background-attachment:fixed;
+    background-image: url("/resources/website_images/Background.jpg");
+    background-repeat: repeat;
+    background-position:center;
+}
+div.wrap 
+{ 
+    width: 1024px; 
+    margin-left: auto;
+    margin-right: auto; 
+    margin-top:10px;
+    text-align:right;
+}
+
+div.search 
+{ 
+    float: right; 
+    text-align:right;
+}
+
+div#banner	
+{	
+    width: 1024px;
+    text-align:right;
+    margin-right:auto;
+    margin-left:auto;
+} 
+
+div.header1
+{
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 12px;
+    float:left;
+    text-align: right; 
+    color: #000000;
+}
+
+div.header2
+{
+    float: left; 
+    width: 1025px; 
+    margin-left:auto; 
+    margin-right:auto;
+    font-size: 24px;
+    text-align:center;
+    border-bottom: 20px solid rgb(77, 151, 20); 
+    color: #000000;
+}
+
+div.header_general
+{
+    float: left; 
+    width: 1025px; 
+    margin-left:auto; 
+    margin-right:auto;
+    font-size: 350%;
+    text-align:left;
+    border-bottom: 20px solid rgb(77, 151, 20); 
+    color: #000000;
+}
+
+div.header_general_1
+{
+    float: left; 
+    width: 1025px; 
+    margin-left:auto; 
+    margin-right:auto;
+    text-align: right;
+}
+
+div.header_general_2
+{
+    float: left; 
+    width: 1025px; 
+    margin-left:auto; 
+    margin-right:auto;
+    font-size: 30px;
+    text-align:left;
+    color: #000000;
+}
+
+.top 
+{
+    vertical-align: top;  
+}
+
+.info 
+{
+    height: 202px;
+    overflow: auto;
+}
+
+div.productInfo_content
+{
+    width:1025px;
+    float:left;
+    color: #000000;
+    text-align:left;
+}
+
+div.homepageContent
+{
+    width:250px;
+    float:left;
+    margin-top:4px;
+    text-align:left;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+div.content1
+{
+    width:260px;
+    float:left;
+    text-align:left;
+    padding:3px;
+}
+
+div.content2
+{
+    width:751px;
+    float:right;
+    margin-left: 2px;
+    text-align:left;
+    padding:3px;
+}
+
+div.content_general
+{
+    width:1025px;
+    float:left;
+    font-size:120%;
+    text-align:left;
+}
+
+div.content_general_head
+{
+    width:1025px;
+    float:left;
+    text-align:left;
+    font-size:10px;
+}
+
+div.content_general_bottom
+{
+    width:1025px;
+    float:left;
+    font-size:200%;
+    color: #000000;
+    text-align:right;
+}
+
+div.content_left
+{
+    width:300px;
+    float:left;
+    color: #000000;
+    text-align:left;
+}
+
+div.button_content_left
+{
+    width:300px;
+    float:left;
+    color: #000000;
+    text-align:left;
+    padding:10px;
+}
+
+div.content_right
+{
+    width:704px;
+    float:right;
+    color: #000000;
+    text-align:left;
+    padding:5px;
+}
+
+div.content_right_1
+{
+    width:452px;
+    float:left;
+    color: #000000;
+    text-align:left;
+    font-size: 12px;
+}
+
+div.content_right_2
+{
+    width:230px;
+    float:right;
+    color: #000000;
+    text-align:left;
+    font-size:12px;
+}
+
+div.content_right_3
+{
+    width:452px;
+    float:left;
+    color: #000000;
+    font-size:12px;
+}
+
+div.content_right_4
+{
+    width:230px;
+    float:right;
+    color: #000000;
+    text-align:left;
+    font-size:12px;
+}
+
+div.footer
+{
+    clear:both;
+    text-align:center;
+    padding-top:2px;
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 12px; 
+}
+
+p#footer-font	
+{	
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 10px; 
+    text-align: center; 
+    margin-top: 20px; 
+    padding-top: 5px;
+    color: #000000;
+}
+
+a#h3:link 
+{
+    font-size:24px;
+    color: #336600;
+    text-decoration: none;
+}
+a#h3:visited 
+{
+    font-size:24px;
+    color: #336600;
+    text-decoration: none;
+}
+a#h3:hover 
+{
+    font-size:24px;
+    text-decoration: none;
+    color: #66CC33;
+}
+a#h3:active 
+{
+    font-size:24px;
+    text-decoration: none;
+    color: #336600;
+}
+
+

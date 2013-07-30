@@ -1,0 +1,5 @@
+
+
+asadmin create-jdbc-connection-pool --datasourceclassname=com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource --restype=javax.sql.DataSource --property portNumber=3306:password=khongbiet:user=root:serverName=localhost:databaseName=DVDStoreWebAppDB:ConnectionAttributes=;create\=true DVDStoreWebAppPool
+asadmin ping-connection-pool DVDStoreWebAppPool
+asadmin create-jdbc-resource --connectionpoolid DVDStoreWebAppPool jdbc/DVDStoreWebAppDS

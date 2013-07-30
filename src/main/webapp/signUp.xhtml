@@ -1,0 +1,121 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+      
+	<ui:composition template="template.xhtml">
+
+    	<ui:define name="content">
+            <h:form id="newBusinessForm" enctype="multipart/form-data">
+                <p:panel id="newBusinessPanel">
+                <p:focus context="newBusinessPanel" />
+                    <p:messages id="showMessages" />
+                    <p:fieldset legend="Personal Information">
+                        <h:panelGrid columns="3" >
+                            <h:outputLabel value="Name Title  :"/>
+                            <p:selectOneMenu value="#{loginController.business.nameTitle}" id="btitle">  
+                                <f:selectItem itemLabel="Mr" itemValue="Mr" />  
+                                <f:selectItem itemLabel="Ms" itemValue="Ms" />  
+                                <f:selectItem itemLabel="Mrs" itemValue="Mrs" />  
+                                <f:selectItem itemLabel="Miss" itemValue="Miss" />  
+                            </p:selectOneMenu>
+                            <p:message for="btitle" display="icon"/>
+
+                            <h:outputLabel value="First Name :"/>
+                            <p:inputText id="bfname" value="#{loginController.business.firstName}" required="true" requiredMessage="First Name cannot be blank !" size="20"/>
+                            <p:message for="bfname" display="icon" />
+
+                            <h:outputLabel value="Last Name :"/>
+                            <p:inputText id="blname" value="#{loginController.business.lastName}" required="true" requiredMessage="Last Name cannot be blank !" size="20"/>
+                            <p:message for="blname" display="icon"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <br />
+                    <p:fieldset legend="Business Information">
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="Address :"/>
+                            <p:inputText id="baddress" value="#{loginController.business.address}" required="true" requiredMessage="Address cannot be blank !" size="20"/>
+                            <p:message for="baddress" display="icon"/>
+                            
+                            <h:outputLabel value="Suburb :"/>
+                            <p:inputText id="bsuburb" value="#{loginController.business.suburb}" required="true" requiredMessage="Suburb cannot be blank !" size="20"/>
+                            <p:message for="bsuburb" display="icon"/>
+                            
+                            <h:outputLabel value="State  :"/>
+                            <p:selectOneMenu value="#{loginController.business.state}" id="bstate">  
+                                <f:selectItem itemLabel="ACT" itemValue="ACT" />
+                                <f:selectItem itemLabel="NT" itemValue="NT" />
+                                <f:selectItem itemLabel="NSW" itemValue="NSW" />
+                                <f:selectItem itemLabel="QLD" itemValue="QLD" />  
+                                <f:selectItem itemLabel="SA" itemValue="SA" />  
+                                <f:selectItem itemLabel="TAS" itemValue="TAS" />
+                                <f:selectItem itemLabel="VIC" itemValue="VIC" />
+                                <f:selectItem itemLabel="WA" itemValue="WA" /> 
+                            </p:selectOneMenu>
+                            <p:message for="bstate" display="icon"/>
+                            
+                            <h:outputLabel value="Post Code :"/>
+                            <p:inputText id="bpostcode" value="#{loginController.business.postCode}" required="true" requiredMessage="Post Code cannot be blank !" size="20"/>
+                            <p:message for="bpostcode" display="icon"/>
+                            
+                            <h:outputLabel value="Contact Number :"/>
+                            <p:inputText id="bcontactnumber" required="true" value="#{loginController.business.contactNumber}" requiredMessage="Contact Number cannot be blank !" size="16"/>
+                            <p:message for="bcontactnumber" display="icon"/>
+                            
+                            <h:outputLabel value="Email Address  :"/>
+                            
+                            <p:inputText id="bemail" value="#{loginController.business.email}" required="true" requiredMessage="Email Address cannot be blank !" size="20" validatorMessage="Email is not valid !">
+                                <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                            </p:inputText>
+                            <p:message for="bemail" display="icon"/>
+                            
+                            <h:outputLabel value="ABN/ACN :"/>
+                            <p:inputText id="bnumber" required="true" value="#{loginController.business.businessNumber}" requiredMessage="Business Number cannot be blank !" size="16"/>
+                            <p:message for="bnumber" display="icon"/>
+                            
+                            <h:outputLabel value="Business Name :"/>
+                            <p:inputText id="bname" required="true" value="#{loginController.business.businessName}" requiredMessage="Business Name cannot be blank !" size="16"/>
+                            <p:message for="bname" display="icon"/>
+                            
+                            <h:outputLabel value="Business Logo :"/>
+                            <p:fileUpload id="fileUpload" value="#{loginController.file}" mode="simple" />
+                            <p:message for="fileUpload" display="icon"/>
+                            
+                        </h:panelGrid>
+                        <pe:keyFilter for="bpostcode" mask="num"/>
+                        <pe:keyFilter for="bcontactnumber" mask="num"/>
+                        <pe:keyFilter for="bnumber" mask="num"/>
+                    </p:fieldset>
+                    <br />
+                    <p:fieldset legend="Login Information">
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="Username :"/>
+                            <p:inputText id="busername" required="true" value="#{loginController.business.username}" requiredMessage="Username cannot be blank !" size="16"/>
+                            <p:message for="bname" display="icon"/>
+                            
+                            <h:outputLabel value="Password :"/>
+                            <p:password id="bpassword" value="#{loginController.business.password}" required="true" requiredMessage="Password cannot be blank !" match="bconfirmpassword" validatorMessage="Password and confirm password must be matched" size="20"/>
+                            <p:message for="bpassword" display="icon"/>
+
+                            <h:outputLabel value="Confirm Password :"/>
+                            <p:password id="bconfirmpassword" value="#{loginController.business.password}" required="true" requiredMessage="Confirm Password cannot be blank !" size="20"/>
+                            <p:message for="bconfirmpassword" display="icon"/>
+
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <br />
+               
+                    <p:commandButton value="Submit" action="#{loginController.doCreateBusiness}" ajax="false" />
+                    <p:commandButton value="Cancel" action="#{loginController.cancelNavigate}" immediate="true" ajax="false" />
+                </p:panel>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+	
+        
+</html>

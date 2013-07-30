@@ -1,0 +1,213 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+      
+    <ui:composition template="manageData.xhtml">
+        <ui:define name="content_details">
+            <h:form id="manageSoundtrackForm">
+                <p:growl id="messManageSoundtrack" showDetail="true" rendered="#{not facesContext.validationFailed}"/>
+                <p:dataTable id="soundtracks" var="soundtrack" value="#{manageSoundtrackController.lsSoundtrackDetail}" selection="#{manageSoundtrackController.selectedSoundtracks}" rowKey="#{soundtrack.STDID}" editable="true" style="text-align: center"
+                             paginator="true" rows="10"  
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                            rowsPerPageTemplate="5,10,15">  
+                    <p:ajax event="rowEdit" listener="#{manageSoundtrackController.quickEditSoundtrack}" update=":manageSoundtrackForm:messManageSoundtrack, :newSoundtrackForm:newSoundtrackPanel" />  
+                    <p:column headerText="Delete" selectionMode="multiple" style="width:18px" />
+                    <p:column headerText="Edit Details" style="width:22px"><p:commandButton action="#{manageSoundtrackController.displayEdit(soundtrack.STDID)}" ajax="true" update=":newSoundtrackForm:newSoundtrackPanel" icon="ui-icon-link" /></p:column>
+                    <p:column headerText="Title" style="width:125px">  
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{soundtrack.title}" />  
+                            </f:facet>  
+                            <f:facet name="input">  
+                                <p:inputText value="#{soundtrack.title}" style="width:100%"/>  
+                            </f:facet>  
+                        </p:cellEditor>  
+                    </p:column>  
+
+                    <p:column headerText="Sales Price" style="width:75px">  
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{soundtrack.salesPrice}">
+                                    <f:convertNumber type="currency" />
+                                </h:outputText>
+                            </f:facet>  
+                            <f:facet name="input">
+                                <pe:inputNumber value="#{soundtrack.salesPrice}" symbol="$" style="width:100%" />  
+                            </f:facet>  
+                        </p:cellEditor>  
+                    </p:column>
+
+                    <p:column headerText="Sales Availability" style="width:75px">  
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{soundtrack.salesAvailable}" />  
+                            </f:facet>  
+                            <f:facet name="input">  
+                                <h:selectOneMenu value="#{soundtrack.salesAvailable}" >  
+                                    <f:selectItems value="#{manageDataController.options}" />  
+                                </h:selectOneMenu>  
+                            </f:facet>
+                        </p:cellEditor>  
+                    </p:column>
+
+                    <p:column headerText="Leases Price" style="width:75px">  
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{soundtrack.leasesPrice}">
+                                    <f:convertNumber type="currency" />
+                                </h:outputText>
+                            </f:facet>  
+                            <f:facet name="input">
+                                <pe:inputNumber value="#{soundtrack.leasesPrice}" symbol="$" style="width:100%" />  
+                            </f:facet>  
+                        </p:cellEditor>  
+                    </p:column>
+
+                    <p:column headerText="Leases Availability" style="width:75px">  
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{soundtrack.leasesAvailable}" />  
+                            </f:facet>  
+                            <f:facet name="input">  
+                                <h:selectOneMenu value="#{soundtrack.leasesAvailable}" >  
+                                    <f:selectItems value="#{manageDataController.options}" />  
+                                </h:selectOneMenu>  
+                            </f:facet>
+                        </p:cellEditor>  
+                    </p:column>
+
+                    <p:column headerText="Quick Edit" style="width:40px; alignment-adjust: central">  
+                        <p:rowEditor />  
+                    </p:column>
+
+                </p:dataTable>
+                <p:separator />
+                <p:commandButton value="Delete" onclick="deleteConfirmation.show()" />
+                <p:commandButton value="Create New" action="#{manageSoundtrackController.displayCreateNew}" ajax="true" update=":newSoundtrackForm:newSoundtrackPanel">
+                    
+                </p:commandButton>
+                <p:separator />
+                <p:confirmDialog id="deleteConfirmDialog" message="Are you sure you want to delete?"
+                    header="Delete" severity="alert"
+                    widgetVar="deleteConfirmation">
+
+                    <p:commandButton id="confirm" value="Yes"
+                        update=":manageSoundtrackForm, :newSoundtrackForm:newSoundtrackPanel" oncomplete="deleteConfirmation.hide()"
+                        action="#{manageSoundtrackController.deleteSoundtracks}" />
+                    <p:commandButton id="cancel" value="No"
+                        onclick="deleteConfirmation.hide()" type="button" />
+                </p:confirmDialog>
+            </h:form>
+            <h:form id="newSoundtrackForm" enctype="multipart/form-data">
+                <p:panel id="newSoundtrackPanel" widgetVar="newSoundtrackVar" visible="#{manageSoundtrackController.visible}" header="#{manageSoundtrackController.strAction}" style="font-size: 120%">
+                    <p:focus context="newSoundtrackPanel" />
+                    <p:messages id="soundtrackMessages" rendered="#{facesContext.validationFailed}"/>
+                    <p:panel header="General Information Details">
+                        <h:panelGrid columns="3" >
+                            <h:outputLabel value="Title :"/>
+                            <p:autoComplete id="title" value="#{manageSoundtrackController.soundtrack.title}" completeMethod="#{manageSoundtrackController.completeTitle}" required="true" requiredMessage="Title cannot be blank !" size="20"/>
+                            <p:message for="title" display="icon"/>
+
+                            <h:outputLabel value="Category :"/>
+                            <p:selectOneMenu value="#{manageSoundtrackController.soundtrack.category}">  
+                                <f:selectItems value="#{manageSoundtrackController.soundtrackCategories}" />  
+                            </p:selectOneMenu> 
+                            <h:outputLabel />
+
+                        </h:panelGrid>
+                    </p:panel>
+                    
+                    <p:panel header="Product Description Details">
+                        <h:panelGrid columns="3" >   
+                            <h:outputLabel value="Description :"/>
+                            <p:inputTextarea id="description" required="true" value="#{manageSoundtrackController.soundtrack.description}" requiredMessage="Description cannot be blank !" rows="6" cols="33" />
+                            <p:message for="description" display="icon"/>
+
+                            <h:outputLabel value="Picture :"/>
+                            <p:fileUpload id="fileUpload" mode="advanced" multiple="false" required="true" requiredMessage="Image cannot be blank !" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" fileUploadListener="#{manageSoundtrackController.uploadImage}" update="imageProduct" />
+                            <p:graphicImage id="imageProduct" value="/resources/product_images/#{manageSoundtrackController.imageProduct}" /> 
+
+                            <h:outputLabel value="Format :"/>
+                            <p:inputText id="format" required="true" value="#{manageSoundtrackController.soundtrack.format}" requiredMessage="Format cannot be blank !" size="20"/>
+                            <p:message for="format" display="icon"/>
+
+                            <h:outputLabel value="Language :"/>
+                            <p:inputText id="language" required="true" value="#{manageSoundtrackController.soundtrack.language}" requiredMessage="Language cannot be blank !" size="20" />
+                            <p:message for="language" display="icon"/>
+
+                            <h:outputLabel value="Released Date :"/>
+                            <p:calendar value="#{manageSoundtrackController.soundtrack.releasedDate}" id="releasedDate" pattern="dd/MM/yyyy" showButtonPanel="true" navigator="true" required="true" requiredMessage="Released Date cannot be blank !" converterMessage="Released Date must be in correct pattern"/>
+                            <p:message for="releasedDate" display="icon"/>
+
+                            <h:outputLabel value="Product Link :"/>
+                            <p:inputText id="productLink" required="true" value="#{manageSoundtrackController.soundtrack.productLink}" requiredMessage="Product Link cannot be blank !" size="30" />
+                            <p:message for="productLink" display="icon"/>
+
+                            <h:outputLabel value="Album Name :"/>
+                            <p:inputText id="albumName" required="true" value="#{manageSoundtrackController.soundtrack.album}" requiredMessage="Album Name cannot be blank !" size="20" />
+                            <p:message for="albumName" display="icon"/>
+
+                            <h:outputLabel value="Artist Name :"/>
+                            <p:inputText id="artist" required="true" value="#{manageSoundtrackController.soundtrack.artist}" requiredMessage="Artist Name cannot be blank !" size="20" />
+                            <p:message for="artist" display="icon"/>
+
+                            <h:outputLabel value="Number of tracks :"/>
+                            <p:inputText id="nbrOfTracks" required="true" value="#{manageSoundtrackController.soundtrack.nbrOfTracks}" requiredMessage="Number of tracks cannot be blank !" size="8">
+                                <pe:keyFilter regEx="/[\d]/"/>
+                            </p:inputText>
+                            <p:message for="nbrOfTracks" display="icon"/>
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <p:panel header="Sales/Leases Price Details">
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="Sales Availability :"/>
+                            <p:selectOneMenu value="#{manageSoundtrackController.salesProductAvailable}" >  
+                                <f:selectItems value="#{manageDataController.options}" />
+                                <p:ajax update="switch3" process="@this" />
+                            </p:selectOneMenu>
+                            <h:outputLabel />
+                            
+                            <h:outputLabel value="Sales Price :"/>
+                            <pe:switch id="switch3" value="#{manageSoundtrackController.salesProductAvailable}">  
+                                <pe:case value="Not Available">  
+                                    <p:inputText id="salesPriceNotAvailable" readonly="true" size="16" />
+                                </pe:case>
+                                <pe:case value="Available">  
+                                    <pe:inputNumber id="salesPriceAvailable" value="#{manageSoundtrackController.salesProduct.salesPrice}" symbol="$" minValue="1.0" required="true" requiredMessage="Sales Price cannot be blank !" />
+                                </pe:case>
+                            </pe:switch>
+                            <h:outputLabel />
+
+                            <h:outputLabel value="Leases Availability :"/>
+                            <p:selectOneMenu value="#{manageSoundtrackController.leasesProductAvailable}" >  
+                                <f:selectItems value="#{manageDataController.options}" />
+                                <p:ajax update="switch4" process="@this" />
+                            </p:selectOneMenu>
+                            <h:outputLabel />
+
+                            <h:outputLabel value="Leases Price :"/>
+                            <pe:switch id="switch4" value="#{manageSoundtrackController.leasesProductAvailable}">  
+                                <pe:case value="Not Available">  
+                                    <p:inputText id="leasesPriceNotAvailable" readonly="true" size="16"/>
+                                </pe:case>
+                                <pe:case value="Available">  
+                                    <pe:inputNumber id="leasesPriceAvailable" value="#{manageSoundtrackController.leasesProduct.leasesPrice}" symbol="$" minValue="1.0" required="true" requiredMessage="Leases Price cannot be blank !"/>
+                                </pe:case>
+                            </pe:switch>
+                            <h:outputLabel />
+                        </h:panelGrid>
+                    </p:panel>
+                    
+                    <p:commandButton value="Create New" action="#{manageSoundtrackController.createNewSoundtrack}" ajax="true" update=":manageSoundtrackForm, :newSoundtrackForm:newSoundtrackPanel, :newSoundtrackForm:soundtrackMessages" rendered="#{manageSoundtrackController.strAction eq 'Create a new soundtrack'}" />
+                    <p:commandButton value="Cancel" action="#{manageSoundtrackController.cancelCreate}" ajax="true" update=":newSoundtrackForm:newSoundtrackPanel" rendered="#{manageSoundtrackController.strAction eq 'Create a new soundtrack'}" process="@this" />
+                    
+                    <p:commandButton value="Submit" action="#{manageSoundtrackController.editSoundtrack}" ajax="true" update=":manageSoundtrackForm, :newSoundtrackForm:newSoundtrackPanel, :newSoundtrackForm:soundtrackMessages" rendered="#{manageSoundtrackController.strAction eq 'Edit soundtrack details'}" />
+                    <p:commandButton value="Cancel" action="#{manageSoundtrackController.cancelEdit}" ajax="true" update=":newSoundtrackForm:newSoundtrackPanel" rendered="#{manageSoundtrackController.strAction eq 'Edit soundtrack details'}" process="@this" />
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

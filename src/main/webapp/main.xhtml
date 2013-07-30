@@ -1,0 +1,232 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+  
+    
+    <ui:composition template="template.xhtml">
+        
+        <ui:define name="search_box">
+            <h:form id="searchForm">
+                <p:growl id="mess" showDetail="true"/>
+                     <h:panelGrid columns="3" >
+                         <p:inputText id="search_data" value="#{categoryMenuModel.strSearch}" size="30" required="true" requiredMessage="Please enter the product's title" />
+                         <p:watermark for="search_data" value="Please enter the title" />
+                         <p:commandButton action="#{categoryMenuModel.search}" icon="ui-icon-search" ajax="false" />
+                      </h:panelGrid>
+                <p:commandLink styleClass="linkComm1" id="advanced_search" onclick="dlg_advancedSearch.show()" value="Advanced Search" update=":advancedSearchForm" process="@this" actionListener="#{categoryMenuModel.resetAdvancedSearch}"><p:resetInput target=":advancedSearchForm:advancedSearchPanel" /></p:commandLink>
+            </h:form>
+            
+            <p:dialog id="searchDialog" header="Advanced Search" widgetVar="dlg_advancedSearch" resizable="false" modal="true">
+                <h:form id="advancedSearchForm">
+                    <p:panel id="advancedSearchPanel" style="border: none; width: 450px">
+                        <p:focus context="advancedSearchPanel" />
+                        <p:messages id="advancedSearchMessages" />
+                        
+                        <h:outputText value="Title: " />
+                        <p:inputText id="searchAdvanced_data" value="#{categoryMenuModel.strAdvancedSearch}" size="30" required="true" requiredMessage="Please enter the product's title" />
+                        
+                        <br />
+                        <br />
+                        
+                        <p:selectOneMenu value="#{categoryMenuModel.selectedTypeSearch}" id="select_type" style="text-align: center">  
+                            <f:selectItems value="#{categoryMenuModel.listType}" />
+                            <p:ajax event="change" update=":advancedSearchForm:select_categories" listener="#{categoryMenuModel.changeCategorySearch()}" />
+                        </p:selectOneMenu>
+                        <p:selectOneMenu value="#{categoryMenuModel.selectedCategorySearch}" id="select_categories" style="text-align: center; margin-left: 10px">  
+                            <f:selectItems value="#{categoryMenuModel.listCategoriesSearch}" />
+                        </p:selectOneMenu>
+                        
+                        <br />
+                        <br />
+                        
+                        <p:selectOneRadio value="#{categoryMenuModel.selectedOption}">  
+                            <f:selectItem itemLabel="Buy DVD" itemValue="buyDVD" />  
+                            <f:selectItem itemLabel="Rent DVD" itemValue="rentDVD" />
+                            <f:selectItem itemLabel="Both" itemValue="both" />
+                        </p:selectOneRadio>
+                        
+                        <br />
+                        
+                        <h:outputText value="Price: Between " />
+                        <pe:inputNumber styleClass="sample" id="minimum_price" value="#{categoryMenuModel.minimumSearchPrice}" symbol="$" minValue="1" maxValue="800" />
+                        <h:outputText value=" AND " />
+                        <pe:inputNumber styleClass="sample" id="maximum_price" value="#{categoryMenuModel.maximumSearchPrice}" symbol="$" minValue="1" maxValue="1000" />
+                        
+                        <br />
+                        <br />
+                        
+                        <p:commandButton value="Search" update="advancedSearchPanel, :productForm" ajax="false"
+                                         actionListener="#{categoryMenuModel.searchAdvanced}" oncomplete="handleAdvancedSearchRequest(args)" />
+                        <p:commandButton value="Cancel" onclick="dlg_advancedSearch.hide();" process="@this" />
+
+                    </p:panel>
+                </h:form>
+                <h:form>
+                    <p:commandButton id="hiddenAdvancedSearch" action="/home.xhtml?faces-redirect=true" widgetVar="hiddenAdvancedSearch" ajax="false" style="visibility: hidden" />
+                </h:form>
+            </p:dialog>
+        </ui:define>
+        <ui:define name="menu">
+            <h:form id="menuForm">
+                <pe:switch id="switch" value="#{mainPageController.status}">
+                    <pe:case value="login">
+                        <p:commandLink id="loginLink" value="Login" onclick="dlgLogin.show()" update=":loginForm, :forgotPassForm"><p:resetInput target=":loginForm:loginPanel" /><p:resetInput target=":forgotPassForm:forgotPassPanel" /></p:commandLink> | <p:commandLink id="signUpLink" value="Business Sign Up" action="#{loginController.signUpNavigave}" ajax="false" />
+                    </pe:case>
+                    <pe:case value="logout">
+                        <p:commandLink id="logoutLink" value="Logout" />
+                    </pe:case>
+                </pe:switch>
+             </h:form>
+            <p:dialog id="loginDialog" header="Login" widgetVar="dlgLogin" modal="true" resizable="false">
+                <p:ajax event="close" update="loginDialog"/>
+                    <h:form id="loginForm">
+                        <p:panel id="loginPanel">
+                            <p:focus context="loginPanel" />
+                            <p:messages id="loginMessages" />
+                            <h:panelGrid columns="3" >
+                                <h:outputLabel value="Username:"/>
+                                <p:inputText id="username" value="#{loginController.username}" required="true" requiredMessage="Username cannot be blank !" />
+                                <p:message for="username" display="icon"/>
+
+                                <h:outputLabel value="Password :"/>
+                                <p:password id="password" value="#{loginController.password}" required="true" requiredMessage="Password cannot be blank !" />
+                                <p:message for="password" display="icon"/>
+
+                                <f:facet name="footer">
+                                    <p:commandButton id="loginButton" value="Login" ajax="true" update="loginPanel, :menuForm" actionListener="#{loginController.login}" oncomplete="handleLoginRequest(args)"/>
+                                    <p:commandButton id="cancelButton" value="Cancel" onclick="dlgLogin.hide()" />
+                                </f:facet>
+                            </h:panelGrid>
+                            <p:commandLink id="forgotPass" value="Forgot Password ???" onclick="displayForgotPass()" />
+                        </p:panel>
+                    </h:form>
+                <h:form>
+                    <p:commandButton id="hidden" action="/manageMovie.xhtml?faces-redirect=true" widgetVar="hidden" ajax="false" style="visibility: hidden" />
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog id="forgotPassDialog" header="Forgot Password" widgetVar="dlgForgotPass" modal="true" resizable="false">
+                <p:ajax event="close" update="forgotPassDialog"/>
+                    <h:form id="forgotPassForm">
+                        <p:panel id="forgotPassPanel">
+                            <p:focus context="forgotPassPanel" />
+                            <p:messages id="forgotPassMessages" />
+                            <h:panelGrid columns="3" >
+                                
+                                <p:inputText id="username" value="#{loginController.username}" required="true" requiredMessage="Username cannot be blank !" size="40" />
+                                <p:watermark for="username" value="Enter your username to get password back" />
+                                <p:message for="username" display="icon"/>
+
+                                <f:facet name="footer">
+                                    <p:commandButton id="submitButton" value="Submit" update="forgotPassPanel, :loginForm:loginMessages" actionListener="#{loginController.returnPass}" onstart="blockUI.block()" oncomplete="handleForgotPassRequest(args)"/>
+                                    <p:commandButton value="Cancel" onclick="displayLogin()" update=":loginForm:loginPanel" process="@this"><p:resetInput target=":loginForm:loginPanel" /></p:commandButton>
+                                </f:facet>
+                            </h:panelGrid>
+                        </p:panel>
+                        <pe:blockUI id="blockUI" target="forgotPassPanel" widgetVar="blockUI">
+                            <h:panelGrid columns="2">
+                                <h:graphicImage value="/resources/website_images/ajax-loader.gif" height="20px" width="20px"
+                                                style="margin-right: 12px; vertical-align: middle;"/>
+                                <h:outputText value="Please wait..." style="white-space: nowrap;"/>
+                            </h:panelGrid>
+                        </pe:blockUI>
+                        
+                    </h:form>
+            </p:dialog>
+
+            <script type="text/javascript">
+                function handleLoginRequest(args) 
+                {       
+                    if(args.validationFailed || args.loggedIn == "") 
+                    {
+                        jQuery('#loginDialog').effect("shake", { times:3 }, 100);
+                    } 
+                    else 
+                    {
+                        dlgLogin.hide();
+                        hidden.jq.click();
+                    }
+                }
+                function handleForgotPassRequest(args) 
+                {       
+                    
+                    if(args.validationFailed || args.returnedPass == "") 
+                    {
+                        jQuery('#forgotPassDialog').effect("shake", { times:3 }, 100);
+                    } 
+                    else 
+                    {
+                        displayLogin();
+                    }
+                }
+                function displayForgotPass()
+                {
+                    dlgLogin.hide();
+                    dlgForgotPass.show();
+                }
+                function displayLogin()
+                {
+                    dlgLogin.show();
+                    dlgForgotPass.hide();
+                }
+                
+                function handleAdvancedSearchRequest(args) 
+                {       
+                    if(args.validationFailed) 
+                    {
+                        jQuery('#searchDialog').effect("shake", { times:3 }, 100);
+                    } 
+                    else 
+                    {
+                        dlg_advancedSearch.hide();
+                        hiddenAdvancedSearch.jq.click();
+                    }
+                }
+            </script>
+            
+         </ui:define>
+        <ui:define name="content">
+            <h:form id="productForm">
+                
+            <div class="content1">
+                <p:menu model="#{mainPageController.menuModel}" style="width: 250px" />
+            </div>
+            <div class="content2">
+                <p:panel id="productPanel">
+                <f:facet name="header">
+                <pe:switch id="switchBreadCrumb" value="#{categoryMenuModel.level}">
+                    <pe:case value="level1">
+                        <p:commandLink style="text-decoration: none" value="All Products" action="#{categoryMenuModel.changeLevel(1)}" ajax="true" update=":productForm" />
+                    </pe:case>
+                    <pe:case value="level2">
+                        <p:commandLink style="text-decoration: none" value="All Products" action="#{categoryMenuModel.changeLevel(1)}" ajax="true" update=":productForm" />
+
+                        <p:commandLink style="text-decoration: none" value=" >> #{categoryMenuModel.selectedType}" action="#{categoryMenuModel.changeLevel(2)}" ajax="true" update=":productForm" />
+                    </pe:case>
+                    <pe:case value="level3">
+                        <p:commandLink style="text-decoration: none" value="All Products" action="#{categoryMenuModel.changeLevel(1)}" ajax="true" update=":productForm" />
+                        
+                        <p:commandLink style="text-decoration: none" value=" >> #{categoryMenuModel.selectedType}" action="#{categoryMenuModel.changeLevel(2)}" ajax="true" update=":productForm" />
+
+                        <p:commandLink style="text-decoration: none" value=" >> #{categoryMenuModel.selectedCategory}" action="#{categoryMenuModel.changeLevel(3)}" ajax="true" update=":productForm" />
+                        
+                    </pe:case>
+                </pe:switch>
+                </f:facet>
+                    </p:panel>
+                <ui:insert name="displayData">
+                    
+                </ui:insert>
+                    
+            </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
+

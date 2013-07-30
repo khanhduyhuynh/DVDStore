@@ -1,0 +1,146 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+      
+    <ui:composition template="main.xhtml">
+        <ui:define name="displayData">
+            <h:form id="showDetailsForm">      
+            <p:panelGrid columns="2">
+                <p:column>
+                    <p:graphicImage value="/resources/product_images/#{categoryMenuModel.imageGroup}" width="200px" height="200px" />
+                </p:column>
+                <p:column>
+                    <p:panelGrid columns="1">
+                        <h:outputLabel value="Sale Price: #{categoryMenuModel.minSalesPrice}" rendered="#{categoryMenuModel.minSalesPrice != '$0'}" style="font-weight: bold" />
+                        <h:outputLabel value="Not for sale" rendered="#{categoryMenuModel.minSalesPrice eq '$0'}" style="font-weight: bold" />
+                        <h:outputLabel value="Rent Price: #{categoryMenuModel.minLeasesPrice}" rendered="#{categoryMenuModel.minLeasesPrice != '$0'}" style="font-weight: bold" />
+                        <h:outputLabel value="Not for rent" rendered="#{categoryMenuModel.minLeasesPrice eq '$0'}" style="font-weight: bold" />
+                        <h:outputLabel value="Description: #{categoryMenuModel.product.description}" style="font-weight: bold" />
+                    </p:panelGrid>
+                </p:column>
+            
+            </p:panelGrid>
+            <p:tabView style="background: none; font-size: 90%;">
+                <p:tab title="Compared Price Offers">
+                    <h:form>
+                    <p:dataList value="#{categoryMenuModel.lsComparedProducts}" var="pro" type="definition" 
+                                paginator="true" rows="10"  
+                                paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink} {RowsPerPageDropdown}"  
+                                rowsPerPageTemplate="10,12,14">
+                        <p:panelGrid>
+                            <p:row>
+                                <p:column style="width: 200px">
+                                    <h:outputLabel value="Title: #{pro.title}" style="font-weight: bold" /><br />
+                                    <p:graphicImage value="/resources/product_images/#{pro.image}" width="150px" />
+                                </p:column>
+                                <p:column style="width: 200px">
+                                    <p:graphicImage value="/resources/product_images/#{pro.businessLogo}" width="100px" /><br />
+                                    <h:outputLabel value="Sale Price: #{pro.salesPrice}" rendered="#{pro.salesPrice != '$0'}" style="font-weight: bold" />
+                                    <h:outputLabel value="Not for sale" rendered="#{pro.salesPrice eq '$0'}" style="font-weight: bold" /><br />
+                                    <h:outputLabel value="Rent Price: #{pro.leasesPrice}" rendered="#{pro.leasesPrice != '$0'}" style="font-weight: bold" />
+                                    <h:outputLabel value="Not for rent" rendered="#{pro.leasesPrice eq '$0'}" style="font-weight: bold" />
+                                </p:column>
+                                <p:column>    
+                                    <a href="#{pro.productLink}" target="_blank">
+                                        <p:graphicImage value="/resources/product_images/go_to_store.png" width="100px" />
+                                    </a>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:dataList>
+                    </h:form>  
+                </p:tab>
+                <p:tab title="Information Details">
+                    <h3>General Features</h3>
+                    <p:panel>
+                        <h:panelGrid columns="2" >
+                            <h:outputLabel value="Title: "/>
+                            <h:outputText value="#{categoryMenuModel.product.title}"/>
+		    
+                            <h:outputLabel value="Description: "/>
+                            <h:outputText value="#{categoryMenuModel.product.description}"/>
+		    
+                            <h:outputLabel value="Format: "/>
+                            <h:outputText value="#{categoryMenuModel.product.format}"/>
+		    
+                            <h:outputLabel value="Language: "/>
+                            <h:outputText value="#{categoryMenuModel.product.language}"/>
+		    
+                            <h:outputLabel value="Released Date: "/>
+                            <h:outputText value="#{categoryMenuModel.formatter.format(categoryMenuModel.product.releasedDate)}"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    <h3>Special Features</h3>
+                    <p:panel rendered="#{categoryMenuModel.selectedType eq 'Movie'}">                                                       
+                        <h:panelGrid columns="2" >
+                            <h:outputLabel value="Classification: "/>
+                            <h:outputText value="#{categoryMenuModel.movie.classification}"/>
+                                                            
+                            <h:outputLabel value="Cast: "/>
+                            <h:outputText value="#{categoryMenuModel.movie.castName}"/>
+
+                            <h:outputLabel value="Director: "/>
+                            <h:outputText value="#{categoryMenuModel.movie.director}"/>
+
+                            <h:outputLabel value="Runtime: "/>
+                            <h:outputText value="#{categoryMenuModel.movie.runtime}"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{categoryMenuModel.selectedType eq 'Game'}">
+                        <h:panelGrid columns="2">                                                          
+                            <h:outputLabel value="Classification: "/>
+                            <h:outputText value="#{categoryMenuModel.game.classification}"/>
+                                                            
+                            <h:outputLabel value="Manufacturer: "/>
+                            <h:outputText value="#{categoryMenuModel.game.manufacturer}"/>
+
+                            <h:outputLabel value="Number of players: "/>
+                            <h:outputText value="#{categoryMenuModel.game.nbrOfPlayers}"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{categoryMenuModel.selectedType eq 'Soundtrack'}">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Album: "/>
+                            <h:outputText value="#{categoryMenuModel.soundtrack.album}"/>
+                                                            
+                            <h:outputLabel value="Artist: "/>
+                            <h:outputText value="#{categoryMenuModel.soundtrack.artist}"/>
+
+                            <h:outputLabel value="Number of tracks: "/>
+                            <h:outputText value="#{categoryMenuModel.soundtrack.nbrOfTracks}"/>
+                        </h:panelGrid>
+                    </p:panel>
+                                                       
+                </p:tab>
+                <p:tab title="System Requirements" rendered="#{categoryMenuModel.selectedType eq 'Game'}">
+                    <p:panel>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="CPU: "/>
+                            <h:outputText value="#{categoryMenuModel.systemRequirement.CPU}"/>
+                            
+                            <h:outputLabel value="RAM: "/>
+                            <h:outputText value="#{categoryMenuModel.systemRequirement.RAM}"/>
+                            
+                            <h:outputLabel value="VGA: "/>
+                            <h:outputText value="#{categoryMenuModel.systemRequirement.VGA}"/>
+                                                            
+                            <h:outputLabel value="HDD: "/>
+                            <h:outputText value="#{categoryMenuModel.systemRequirement.HDD}"/>
+                            
+                            <h:outputLabel value="OS: "/>
+                            <h:outputText value="#{categoryMenuModel.systemRequirement.OS}"/>
+                            
+                            <h:outputLabel value="Sound: " rendered="#{categoryMenuModel.systemRequirement.sound != ''}"/>
+                            <h:outputText value="#{categoryMenuModel.systemRequirement.sound}" rendered="#{categoryMenuModel.systemRequirement.sound != null}"/>
+                            
+                            <h:outputLabel value="Note: " rendered="#{categoryMenuModel.systemRequirement.note != ''}"/>
+                            <h:outputText value="#{categoryMenuModel.systemRequirement.note}" rendered="#{categoryMenuModel.systemRequirement.note != ''}"/>
+
+                        </h:panelGrid>
+                    </p:panel>
+                </p:tab>
+            </p:tabView>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

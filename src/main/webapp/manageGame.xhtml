@@ -1,0 +1,247 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+      
+    <ui:composition template="manageData.xhtml">
+        <ui:define name="content_details">
+            <h:form id="manageGameForm">
+                <p:growl id="messManageGame" showDetail="true" rendered="#{not facesContext.validationFailed}"/>
+                <p:dataTable id="games" var="game" value="#{manageGameController.lsGameDetail}" selection="#{manageGameController.selectedGames}" rowKey="#{game.GDID}" editable="true" style="text-align: center"
+                             paginator="true" rows="10"  
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                            rowsPerPageTemplate="5,10,15">  
+                    <p:ajax event="rowEdit" listener="#{manageGameController.quickEditGame}" update=":manageGameForm:messManageGame, :newGameForm:newGamePanel" />  
+                    <p:column headerText="Delete" selectionMode="multiple" style="width:18px" />
+                    <p:column headerText="Edit Details" style="width:22px"><p:commandButton action="#{manageGameController.displayEdit(game.GDID)}" ajax="true" update=":newGameForm:newGamePanel" icon="ui-icon-link" /></p:column>
+                    <p:column headerText="Title" style="width:125px">  
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{game.title}" />  
+                            </f:facet>  
+                            <f:facet name="input">  
+                                <p:inputText value="#{game.title}" style="width:100%"/>  
+                            </f:facet>  
+                        </p:cellEditor>  
+                    </p:column>  
+
+                    <p:column headerText="Sales Price" style="width:75px">  
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{game.salesPrice}">
+                                    <f:convertNumber type="currency" />
+                                </h:outputText>
+                            </f:facet>  
+                            <f:facet name="input">
+                                <pe:inputNumber value="#{game.salesPrice}" symbol="$" style="width:100%" />  
+                            </f:facet>  
+                        </p:cellEditor>  
+                    </p:column>
+
+                    <p:column headerText="Sales Availability" style="width:75px">  
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{game.salesAvailable}" />  
+                            </f:facet>  
+                            <f:facet name="input">  
+                                <h:selectOneMenu value="#{game.salesAvailable}" >  
+                                    <f:selectItems value="#{manageDataController.options}" />  
+                                </h:selectOneMenu>  
+                            </f:facet>
+                        </p:cellEditor>  
+                    </p:column>
+
+                    <p:column headerText="Leases Price" style="width:75px">  
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{game.leasesPrice}">
+                                    <f:convertNumber type="currency" />
+                                </h:outputText>
+                            </f:facet>  
+                            <f:facet name="input">
+                                <pe:inputNumber value="#{game.leasesPrice}" symbol="$" style="width:100%" />  
+                            </f:facet>  
+                        </p:cellEditor>  
+                    </p:column>
+
+                    <p:column headerText="Leases Availability" style="width:75px">  
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{game.leasesAvailable}" />  
+                            </f:facet>  
+                            <f:facet name="input">  
+                                <h:selectOneMenu value="#{game.leasesAvailable}" >  
+                                    <f:selectItems value="#{manageDataController.options}" />  
+                                </h:selectOneMenu>  
+                            </f:facet>
+                        </p:cellEditor>  
+                    </p:column>
+
+                    <p:column headerText="Quick Edit" style="width:40px; alignment-adjust: central">  
+                        <p:rowEditor />  
+                    </p:column>
+
+                </p:dataTable>
+                <p:separator />
+                <p:commandButton value="Delete" onclick="deleteConfirmation.show()" />
+                <p:commandButton value="Create New" action="#{manageGameController.displayCreateNew}" ajax="true" update=":newGameForm:newGamePanel">
+                    
+                </p:commandButton>
+                <p:separator />
+                <p:confirmDialog id="deleteConfirmDialog" message="Are you sure you want to delete?"
+                    header="Delete" severity="alert"
+                    widgetVar="deleteConfirmation">
+
+                    <p:commandButton id="confirm" value="Yes"
+                        update=":manageGameForm, :newGameForm:newGamePanel" oncomplete="deleteConfirmation.hide()"
+                        action="#{manageGameController.deleteGames}" />
+                    <p:commandButton id="cancel" value="No"
+                        onclick="deleteConfirmation.hide()" type="button" />
+                </p:confirmDialog>
+            </h:form>
+            <h:form id="newGameForm" enctype="multipart/form-data">
+                <p:panel id="newGamePanel" widgetVar="newGameVar" visible="#{manageGameController.visible}" header="#{manageGameController.strAction}" style="font-size: 120%">
+                    <p:focus context="newGamePanel" />
+                    <p:messages id="gameMessages" rendered="#{facesContext.validationFailed}"/>
+                    <p:panel header="General Information Details">
+                        <h:panelGrid columns="3" >
+                            <h:outputLabel value="Title :"/>
+                            <p:autoComplete id="title" value="#{manageGameController.game.title}" completeMethod="#{manageGameController.completeTitle}" required="true" requiredMessage="Title cannot be blank !" size="20"/>
+                            <p:message for="title" display="icon"/>
+
+                            <h:outputLabel value="Category :"/>
+                            <p:selectOneMenu value="#{manageGameController.game.category}">  
+                                <f:selectItems value="#{manageGameController.gameCategories}" />  
+                            </p:selectOneMenu> 
+                            <h:outputLabel />
+                            
+                            <h:outputLabel value="Classification :"/>
+                            <p:selectOneMenu value="#{manageGameController.game.classification}">  
+                                <f:selectItems value="#{manageGameController.gameClassifications}" />
+                            </p:selectOneMenu> 
+                            <h:outputLabel />
+
+                        </h:panelGrid>
+                    </p:panel>
+                    
+                    <p:panel header="Product Description Details">
+                        <h:panelGrid columns="3" >   
+                            <h:outputLabel value="Description :"/>
+                            <p:inputTextarea id="description" required="true" value="#{manageGameController.game.description}" requiredMessage="Description cannot be blank !" rows="6" cols="33" />
+                            <p:message for="description" display="icon"/>
+
+                            <h:outputLabel value="Picture :"/>
+                            <p:fileUpload id="fileUpload" mode="advanced" multiple="false" required="true" requiredMessage="Image cannot be blank !" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" fileUploadListener="#{manageGameController.uploadImage}" update="imageProduct" />
+                            <p:graphicImage id="imageProduct" value="/resources/product_images/#{manageGameController.imageProduct}" /> 
+
+                            <h:outputLabel value="Format :"/>
+                            <p:inputText id="format" required="true" value="#{manageGameController.game.format}" requiredMessage="Format cannot be blank !" size="20"/>
+                            <p:message for="format" display="icon"/>
+
+                            <h:outputLabel value="Language :"/>
+                            <p:inputText id="language" required="true" value="#{manageGameController.game.language}" requiredMessage="Language cannot be blank !" size="20" />
+                            <p:message for="language" display="icon"/>
+
+                            <h:outputLabel value="Released Date :"/>
+                            <p:calendar value="#{manageGameController.game.releasedDate}" id="releasedDate" pattern="dd/MM/yyyy" showButtonPanel="true" navigator="true" required="true" requiredMessage="Released Date cannot be blank !" converterMessage="Released Date must be in correct pattern"/>
+                            <p:message for="releasedDate" display="icon"/>
+
+                            <h:outputLabel value="Product Link :"/>
+                            <p:inputText id="productLink" required="true" value="#{manageGameController.game.productLink}" requiredMessage="Product Link cannot be blank !" size="30" />
+                            <p:message for="productLink" display="icon"/>
+
+                            <h:outputLabel value="Manufacturer :"/>
+                            <p:inputText id="manufacturer" required="true" value="#{manageGameController.game.manufacturer}" requiredMessage="Manufacturer cannot be blank !" size="20" />
+                            <p:message for="manufacturer" display="icon"/>
+
+                            <h:outputLabel value="Number of players :"/>
+                            <p:inputText id="nbrOfPlayers" required="true" value="#{manageGameController.game.nbrOfPlayers}" requiredMessage="Number of players cannot be blank !" size="8">
+                                <pe:keyFilter regEx="/[\d]/"/>
+                            </p:inputText>
+                            <p:message for="nbrOfPlayers" display="icon"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    
+                    <p:panel header="System Requirements">
+                        <h:panelGrid columns="3" >   
+                            <h:outputLabel value="CPU :"/>
+                            <p:inputTextarea id="CPU" required="true" value="#{manageGameController.systemRequirement.CPU}" requiredMessage="CPU cannot be blank !" rows="3" cols="33" />
+                            <p:message for="CPU" display="icon"/>
+
+                            <h:outputLabel value="RAM :"/>
+                            <p:inputTextarea id="RAM" required="true" value="#{manageGameController.systemRequirement.RAM}" requiredMessage="RAM cannot be blank !" rows="2" cols="33" />
+                            <p:message for="RAM" display="icon"/>
+                            
+                            <h:outputLabel value="VGA :"/>
+                            <p:inputTextarea id="VGA" required="true" value="#{manageGameController.systemRequirement.VGA}" requiredMessage="VGA cannot be blank !" rows="2" cols="33" />
+                            <p:message for="VGA" display="icon"/>
+                            
+                            <h:outputLabel value="HDD :"/>
+                            <p:inputTextarea id="HDD" required="true" value="#{manageGameController.systemRequirement.HDD}" requiredMessage="HDD cannot be blank !" rows="2" cols="33" />
+                            <p:message for="HDD" display="icon"/>
+                            
+                            <h:outputLabel value="OS :"/>
+                            <p:inputTextarea id="OS" required="true" value="#{manageGameController.systemRequirement.OS}" requiredMessage="OS cannot be blank !" rows="2" cols="33" />
+                            <p:message for="OS" display="icon"/>
+                            
+                            <h:outputLabel value="Sound :"/>
+                            <p:inputTextarea id="sound" value="#{manageGameController.systemRequirement.sound}" rows="2" cols="33" />
+                            <h:outputLabel />
+                            
+                            <h:outputLabel value="Note :"/>
+                            <p:inputTextarea id="note" value="#{manageGameController.systemRequirement.note}" rows="4" cols="33" />
+                            <h:outputLabel />
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <p:panel header="Sales/Leases Price Details">
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="Sales Availability :"/>
+                            <p:selectOneMenu value="#{manageGameController.salesProductAvailable}" >  
+                                <f:selectItems value="#{manageDataController.options}" />
+                                <p:ajax update="switch3" process="@this" />
+                            </p:selectOneMenu>
+                            <h:outputLabel />
+                            
+                            <h:outputLabel value="Sales Price :"/>
+                            <pe:switch id="switch3" value="#{manageGameController.salesProductAvailable}">  
+                                <pe:case value="Not Available">  
+                                    <p:inputText id="salesPriceNotAvailable" readonly="true" size="16" />
+                                </pe:case>
+                                <pe:case value="Available">  
+                                    <pe:inputNumber id="salesPriceAvailable" value="#{manageGameController.salesProduct.salesPrice}" symbol="$" minValue="1.0" required="true" requiredMessage="Sales Price cannot be blank !" />
+                                </pe:case>
+                            </pe:switch>
+                            <h:outputLabel />
+
+                            <h:outputLabel value="Leases Availability :"/>
+                            <p:selectOneMenu value="#{manageGameController.leasesProductAvailable}" >  
+                                <f:selectItems value="#{manageDataController.options}" />
+                                <p:ajax update="switch4" process="@this" />
+                            </p:selectOneMenu>
+                            <h:outputLabel />
+
+                            <h:outputLabel value="Leases Price :"/>
+                            <pe:switch id="switch4" value="#{manageGameController.leasesProductAvailable}">  
+                                <pe:case value="Not Available">  
+                                    <p:inputText id="leasesPriceNotAvailable" readonly="true" size="16"/>
+                                </pe:case>
+                                <pe:case value="Available">  
+                                    <pe:inputNumber id="leasesPriceAvailable" value="#{manageGameController.leasesProduct.leasesPrice}" symbol="$" minValue="1.0" required="true" requiredMessage="Leases Price cannot be blank !"/>
+                                </pe:case>
+                            </pe:switch>
+                            <h:outputLabel />
+                        </h:panelGrid>
+                    </p:panel>
+                    
+                    <p:commandButton value="Create New" action="#{manageGameController.createNewGame}" ajax="true" update=":manageGameForm, :newGameForm:newGamePanel, :newGameForm:gameMessages" rendered="#{manageGameController.strAction eq 'Create a new game'}" />
+                    <p:commandButton value="Cancel" action="#{manageGameController.cancelCreate}" ajax="true" update=":newGameForm:newGamePanel" rendered="#{manageGameController.strAction eq 'Create a new game'}" process="@this" />
+                    
+                    <p:commandButton value="Submit" action="#{manageGameController.editGame}" ajax="true" update=":manageGameForm, :newGameForm:newGamePanel, :newGameForm:gameMessages" rendered="#{manageGameController.strAction eq 'Edit game details'}" />
+                    <p:commandButton value="Cancel" action="#{manageGameController.cancelEdit}" ajax="true" update=":newGameForm:newGamePanel" rendered="#{manageGameController.strAction eq 'Edit game details'}" process="@this" />
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

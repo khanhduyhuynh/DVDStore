@@ -1,0 +1,181 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+      
+    <ui:composition template="template.xhtml">
+    	<ui:define name="menu">
+            <h:form id="menuForm">
+                <p:growl id="messManageData" showDetail="true" rendered="#{not facesContext.validationFailed}"/>
+                <h:outputText value="Welcome, #{manageDataController.username}" style="color: activeborder" />
+                <p:menubar autoDisplay="false" style="border: none; background: none">
+                    <p:submenu label="Actions" icon="ui-icon-gear">
+                        <p:menuitem value="Logout" action="#{manageDataController.logout}" icon="ui-icon-power"/>  
+                        <p:menuitem value="Change password" onclick="dlgChangePass.show()" update=":changePassForm:changePassPanel" icon="ui-icon-locked"><p:resetInput target=":changePassForm:changePassPanel" /></p:menuitem>  
+                        <p:menuitem value="Account Info" onclick="dlgEditBusiness.show()" update=":editBusinessForm:editBusinessPanel" icon="ui-icon-person" />
+                    </p:submenu>
+                </p:menubar>
+            </h:form>
+            <p:dialog id="changePassDialog" header="Change Password" widgetVar="dlgChangePass" modal="true" resizable="false">
+                    <h:form id="changePassForm">
+                        <p:panel id="changePassPanel">
+                            <p:focus context="changePassPanel" />
+                            <p:messages id="changePassMessages" />
+                            <h:panelGrid columns="3" >
+                                <h:outputLabel value="Old password:"/>
+                                <p:password id="oldPass" value="#{manageDataController.oldPassword}" required="true" requiredMessage="Old password cannot be blank !" size="16" />
+                                <p:message for="oldPass" display="icon"/>
+
+                                <h:outputLabel value="New Password :"/>
+                                <p:password id="newPass" value="#{manageDataController.newPassword}" required="true" requiredMessage="New Password cannot be blank !" match="confirmNewPass" validatorMessage="Password and confirm password must be matched" size="16" />
+                                <p:message for="newPass" display="icon"/>
+                                
+                                <h:outputLabel value="Confirm New Password :"/>
+                                <p:password id="confirmNewPass" value="#{manageDataController.newPassword}" required="true" requiredMessage="Confirm New Password cannot be blank !" size="16" />
+                                <p:message for="confirmNewPass" display="icon"/>
+
+                                <f:facet name="footer">
+                                    <p:commandButton id="changeButton" value="Submit" ajax="true" update=":changePassForm:changePassMessages, :menuForm:messManageData" action="#{manageDataController.changePassword}" oncomplete="handleChangePassRequest(args)"/>
+                                    <p:commandButton id="cancelButton" value="Cancel" process="@this" onclick="dlgChangePass.hide()" />
+                                </f:facet>
+                            </h:panelGrid>
+                        </p:panel>
+                    </h:form>
+            </p:dialog>
+            <script type="text/javascript">
+                function handleChangePassRequest(args) 
+                {       
+                    if(args.validationFailed || args.changedPass == "") 
+                    {
+                        jQuery('#changePassDialog').effect("shake", { times:3 }, 100);
+                    } 
+                    else 
+                    {
+                        dlgChangePass.hide();
+                    } 
+                }
+            </script>
+            <p:dialog id="editBusinessDialog" header="Account Information Details" widgetVar="dlgEditBusiness" modal="true" resizable="false">
+            <h:form id="editBusinessForm" enctype="multipart/form-data">
+                <p:panel id="editBusinessPanel" style="text-align: left">
+                <p:focus context="editBusinessPanel" />
+                    <p:messages id="editBusinessMessages" />
+                    <p:panel header="Personal Information">
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="Name Title :"/>
+                            <p:selectOneMenu value="#{manageDataController.business.nameTitle}" id="btitle">  
+                                <f:selectItem itemLabel="Mr" itemValue="Mr" />  
+                                <f:selectItem itemLabel="Ms" itemValue="Ms" />  
+                                <f:selectItem itemLabel="Mrs" itemValue="Mrs" />  
+                                <f:selectItem itemLabel="Miss" itemValue="Miss" />  
+                            </p:selectOneMenu>
+                            <p:message for="btitle" display="icon"/>
+
+                            <h:outputLabel value="First Name :"/>
+                            <p:inputText id="bfname" value="#{manageDataController.business.firstName}" required="true" requiredMessage="First Name cannot be blank !" size="20"/>
+                            <p:message for="bfname" display="icon" />
+
+                            <h:outputLabel value="Last Name :"/>
+                            <p:inputText id="blname" value="#{manageDataController.business.lastName}" required="true" requiredMessage="Last Name cannot be blank !" size="20"/>
+                            <p:message for="blname" display="icon"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel header="Business Information">
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="Address :"/>
+                            <p:inputText id="baddress" value="#{manageDataController.business.address}" required="true" requiredMessage="Address cannot be blank !" size="20"/>
+                            <p:message for="baddress" display="icon"/>
+                            
+                            <h:outputLabel value="Suburb :"/>
+                            <p:inputText id="bsuburb" value="#{manageDataController.business.suburb}" required="true" requiredMessage="Suburb cannot be blank !" size="20"/>
+                            <p:message for="bsuburb" display="icon"/>
+                            
+                            <h:outputLabel value="State  :"/>
+                            <p:selectOneMenu value="#{manageDataController.business.state}" id="bstate">  
+                                <f:selectItem itemLabel="ACT" itemValue="ACT" />
+                                <f:selectItem itemLabel="NT" itemValue="NT" />
+                                <f:selectItem itemLabel="NSW" itemValue="NSW" />
+                                <f:selectItem itemLabel="QLD" itemValue="QLD" />  
+                                <f:selectItem itemLabel="SA" itemValue="SA" />  
+                                <f:selectItem itemLabel="TAS" itemValue="TAS" />
+                                <f:selectItem itemLabel="VIC" itemValue="VIC" />
+                                <f:selectItem itemLabel="WA" itemValue="WA" /> 
+                            </p:selectOneMenu>
+                            <p:message for="bstate" display="icon"/>
+                            
+                            <h:outputLabel value="Post Code :"/>
+                            <p:inputText id="bpostcode" value="#{manageDataController.business.postCode}" required="true" requiredMessage="Post Code cannot be blank !" size="20"/>
+                            <p:message for="bpostcode" display="icon"/>
+                            
+                            <h:outputLabel value="Contact Number :"/>
+                            <p:inputText id="bcontactnumber" required="true" value="#{manageDataController.business.contactNumber}" requiredMessage="Contact Number cannot be blank !" size="16"/>
+                            <p:message for="bcontactnumber" display="icon"/>
+                            
+                            <h:outputLabel value="Email Address  :"/>
+                            
+                            <p:inputText id="bemail" value="#{manageDataController.business.email}" required="true" requiredMessage="Email Address cannot be blank !" size="20" validatorMessage="Email is not valid !">
+                                <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                            </p:inputText>
+                            <p:message for="bemail" display="icon"/>
+                            
+                            <h:outputLabel value="ABN/ACN :"/>
+                            <p:inputText id="bnumber" required="true" value="#{manageDataController.business.businessNumber}" requiredMessage="Business Number cannot be blank !" size="16"/>
+                            <p:message for="bnumber" display="icon"/>
+                            
+                            <h:outputLabel value="Business Name :"/>
+                            <p:inputText id="bname" required="true" value="#{manageDataController.business.businessName}" requiredMessage="Business Name cannot be blank !" size="16"/>
+                            <p:message for="bname" display="icon"/>
+                            
+                            <h:outputLabel value="Business Logo :"/>
+                            <p:fileUpload id="fileUpload" mode="advanced" multiple="false" required="true" requiredMessage="Business Logo cannot be blank !" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" fileUploadListener="#{manageDataController.uploadImage}" update="imageLogo" />
+                            <p:graphicImage id="imageLogo" value="/resources/product_images/#{manageDataController.imageLogo}" />
+                            
+                        </h:panelGrid>
+                        <pe:keyFilter for="bpostcode" mask="num"/>
+                        <pe:keyFilter for="bcontactnumber" mask="num"/>
+                        <pe:keyFilter for="bnumber" mask="num"/>
+                    </p:panel>
+                    <p:commandButton id="editButton" value="Save Changes" ajax="true" update=":editBusinessForm:editBusinessMessages, :menuForm:messManageData" action="#{manageDataController.editBusinessInformation}" oncomplete="handleEditBusinessRequest(args)"/>
+                    <p:commandButton value="Cancel" action="#{manageDataController.cancelEditBusiness}" oncomplete="dlgEditBusiness.hide()" ajax="true" update="imageLogo, :menuForm:messManageData" process="@this" />
+                </p:panel>
+            </h:form>
+            </p:dialog>
+            <script type="text/javascript">
+                function handleEditBusinessRequest(args) 
+                {       
+                    if(args.validationFailed || args.editBusiness == "") 
+                    {
+                        jQuery('#editBusinessDialog').effect("shake", { times:3 }, 100);
+                    } 
+                    else 
+                    {
+                        dlgEditBusiness.hide();
+                    } 
+                }
+            </script>
+        </ui:define>
+        <ui:define name="content">
+            <div class="content_general">
+                <h:form id="navigationForm">
+                    <p:panel id="navigationPanel">
+                        <f:facet name="header">
+                            <p:commandButton value="Manage Movie" action="#{manageDataController.navigationMovie}" />
+                            <p:commandButton value="Manage Game" action="#{manageDataController.navigationGame}" />
+                            <p:commandButton value="Manage Soundtrack" action="#{manageDataController.navigationSoundtrack}" />
+                        </f:facet>
+                        
+                    </p:panel>
+                </h:form>
+            </div>
+            <div class="content_general_head">
+                <ui:insert name="content_details">
+                </ui:insert>
+            </div>
+        </ui:define>
+	
+    </ui:composition>
+</html>

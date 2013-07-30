@@ -1,0 +1,216 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+      
+    <ui:composition template="manageData.xhtml">
+        <ui:define name="content_details">
+            <h:form id="manageMovieForm">
+                <p:growl id="messManageMovie" showDetail="true" rendered="#{not facesContext.validationFailed}"/>
+                <p:dataTable id="movies" var="movie" value="#{manageMovieController.lsMovieDetail}" selection="#{manageMovieController.selectedMovies}" rowKey="#{movie.MDID}" editable="true" style="text-align: center"
+                             paginator="true" rows="10"  
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                            rowsPerPageTemplate="5,10,15">  
+                    <p:ajax event="rowEdit" listener="#{manageMovieController.quickEditMovie}" update=":manageMovieForm:messManageMovie, :newMovieForm:newMoviePanel" />  
+                    <p:column headerText="Delete" selectionMode="multiple" style="width:18px" />
+                    <p:column headerText="Edit Details" style="width:22px"><p:commandButton action="#{manageMovieController.displayEdit(movie.MDID)}" ajax="true" update=":newMovieForm:newMoviePanel" icon="ui-icon-link" /></p:column>
+                    <p:column headerText="Title" style="width:125px">  
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{movie.title}" />  
+                            </f:facet>  
+                            <f:facet name="input">  
+                                <p:inputText value="#{movie.title}" style="width:100%"/>  
+                            </f:facet>  
+                        </p:cellEditor>  
+                    </p:column>  
+
+                    <p:column headerText="Sales Price" style="width:75px">  
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{movie.salesPrice}">
+                                    <f:convertNumber type="currency" />
+                                </h:outputText>
+                            </f:facet>  
+                            <f:facet name="input">
+                                <pe:inputNumber value="#{movie.salesPrice}" symbol="$" style="width:100%" />  
+                            </f:facet>  
+                        </p:cellEditor>  
+                    </p:column>
+
+                    <p:column headerText="Sales Availability" style="width:75px">  
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{movie.salesAvailable}" />  
+                            </f:facet>  
+                            <f:facet name="input">  
+                                <h:selectOneMenu value="#{movie.salesAvailable}" >  
+                                    <f:selectItems value="#{manageDataController.options}" />  
+                                </h:selectOneMenu>  
+                            </f:facet>
+                        </p:cellEditor>  
+                    </p:column>
+
+                    <p:column headerText="Leases Price" style="width:75px">  
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{movie.leasesPrice}">
+                                    <f:convertNumber type="currency" />
+                                </h:outputText>
+                            </f:facet>  
+                            <f:facet name="input">
+                                <pe:inputNumber value="#{movie.leasesPrice}" symbol="$" style="width:100%" />  
+                            </f:facet>  
+                        </p:cellEditor>  
+                    </p:column>
+
+                    <p:column headerText="Leases Availability" style="width:75px">  
+                        <p:cellEditor>  
+                            <f:facet name="output">  
+                                <h:outputText value="#{movie.leasesAvailable}" />  
+                            </f:facet>  
+                            <f:facet name="input">  
+                                <h:selectOneMenu value="#{movie.leasesAvailable}" >  
+                                    <f:selectItems value="#{manageDataController.options}" />  
+                                </h:selectOneMenu>  
+                            </f:facet>
+                        </p:cellEditor>  
+                    </p:column>
+
+                    <p:column headerText="Quick Edit" style="width:40px;">  
+                        <p:rowEditor />  
+                    </p:column>
+
+                </p:dataTable>
+                <p:separator />
+                <p:commandButton value="Delete" onclick="deleteConfirmation.show()" />
+                <p:commandButton value="Create New" action="#{manageMovieController.displayCreateNew}" ajax="true" update=":newMovieForm:newMoviePanel">
+                    
+                </p:commandButton>
+                <p:separator />
+                <p:confirmDialog id="deleteConfirmDialog" message="Are you sure you want to delete?"
+                    header="Delete" severity="alert"
+                    widgetVar="deleteConfirmation">
+
+                    <p:commandButton id="confirm" value="Yes"
+                        update=":manageMovieForm, :newMovieForm:newMoviePanel" oncomplete="deleteConfirmation.hide()"
+                        action="#{manageMovieController.deleteMovies}" />
+                    <p:commandButton id="cancel" value="No"
+                        onclick="deleteConfirmation.hide()" type="button" />
+                </p:confirmDialog>
+            </h:form>
+            <h:form id="newMovieForm" enctype="multipart/form-data">
+                <p:panel id="newMoviePanel" widgetVar="newMovieVar" visible="#{manageMovieController.visible}" header="#{manageMovieController.strAction}" style="font-size: 120%">
+                    <p:focus context="newMoviePanel" />
+                    <p:messages id="movieMessages" rendered="#{facesContext.validationFailed}"/>
+                    <p:panel header="General Information Details">
+                        <h:panelGrid columns="3" >
+                            <h:outputLabel value="Title :"/>
+                            <p:autoComplete id="title" value="#{manageMovieController.movie.title}" completeMethod="#{manageMovieController.completeTitle}" required="true" requiredMessage="Title cannot be blank !" size="20" />
+                            <p:message for="title" display="icon"/>
+
+                            <h:outputLabel value="Category :"/>
+                            <p:selectOneMenu value="#{manageMovieController.movie.category}">  
+                                <f:selectItems value="#{manageMovieController.movieCategories}" />  
+                            </p:selectOneMenu> 
+                            <h:outputLabel />
+
+                            <h:outputLabel value="Classification :"/>
+                            <p:selectOneMenu value="#{manageMovieController.movie.classification}">  
+                                <f:selectItems value="#{manageMovieController.movieClassifications}" />  
+                            </p:selectOneMenu> 
+                            <h:outputLabel />
+                        </h:panelGrid>
+                    </p:panel>
+                    
+                    <p:panel header="Product Description Details">
+                        <h:panelGrid columns="3" >   
+                            <h:outputLabel value="Description :"/>
+                            <p:inputTextarea id="description" required="true" value="#{manageMovieController.movie.description}" requiredMessage="Description cannot be blank !" rows="6" cols="33" />
+                            <p:message for="description" display="icon"/>
+
+                            <h:outputLabel value="Picture :"/>
+                            <p:fileUpload id="fileUpload" mode="advanced" multiple="false" required="true" requiredMessage="Image cannot be blank !" auto="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" fileUploadListener="#{manageMovieController.uploadImage}" update="imageProduct" />
+                            <p:graphicImage id="imageProduct" value="/resources/product_images/#{manageMovieController.imageProduct}" /> 
+
+                            <h:outputLabel value="Format :"/>
+                            <p:inputText id="format" required="true" value="#{manageMovieController.movie.format}" requiredMessage="Format cannot be blank !" size="20"/>
+                            <p:message for="format" display="icon"/>
+
+                            <h:outputLabel value="Language :"/>
+                            <p:inputText id="language" required="true" value="#{manageMovieController.movie.language}" requiredMessage="Language cannot be blank !" size="20" />
+                            <p:message for="language" display="icon"/>
+
+                            <h:outputLabel value="Released Date :"/>
+                            <p:calendar value="#{manageMovieController.movie.releasedDate}" id="releasedDate" pattern="dd/MM/yyyy" showButtonPanel="true" navigator="true" required="true" requiredMessage="Released Date cannot be blank !" converterMessage="Released Date must be in correct pattern"/>
+                            <p:message for="releasedDate" display="icon"/>
+
+                            <h:outputLabel value="Product Link :"/>
+                            <p:inputText id="productLink" required="true" value="#{manageMovieController.movie.productLink}" requiredMessage="Product Link cannot be blank !" size="30" />
+                            <p:message for="productLink" display="icon"/>
+
+                            <h:outputLabel value="Cast Name :"/>
+                            <p:inputText id="castName" required="true" value="#{manageMovieController.movie.castName}" requiredMessage="Cast Name cannot be blank !" size="20" />
+                            <p:message for="castName" display="icon"/>
+
+                            <h:outputLabel value="Director :"/>
+                            <p:inputText id="director" required="true" value="#{manageMovieController.movie.director}" requiredMessage="Director cannot be blank !" size="8" />
+                            <p:message for="director" display="icon"/>
+
+                            <h:outputLabel value="Runtime :"/>
+                            <p:inputText id="runtime" required="true" value="#{manageMovieController.movie.runtime}" requiredMessage="Runtime cannot be blank !" size="8" />
+                            <p:message for="director" display="icon"/>
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <p:panel header="Sales/Leases Price Details">
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="Sales Availability :"/>
+                            <p:selectOneMenu value="#{manageMovieController.salesProductAvailable}" >  
+                                <f:selectItems value="#{manageDataController.options}" />
+                                <p:ajax update="switch3" process="@this" />
+                            </p:selectOneMenu>
+                            <h:outputLabel />
+                            
+                            <h:outputLabel value="Sales Price :"/>
+                            <pe:switch id="switch3" value="#{manageMovieController.salesProductAvailable}">  
+                                <pe:case value="Not Available">  
+                                    <p:inputText id="salesPriceNotAvailable" readonly="true" size="16" />
+                                </pe:case>
+                                <pe:case value="Available">  
+                                    <pe:inputNumber id="salesPriceAvailable" value="#{manageMovieController.salesProduct.salesPrice}" symbol="$" minValue="1.0" required="true" requiredMessage="Sales Price cannot be blank !" />
+                                </pe:case>
+                            </pe:switch>
+                            <h:outputLabel />
+
+                            <h:outputLabel value="Leases Availability :"/>
+                            <p:selectOneMenu value="#{manageMovieController.leasesProductAvailable}" >  
+                                <f:selectItems value="#{manageDataController.options}" />
+                                <p:ajax update="switch4" process="@this" />
+                            </p:selectOneMenu>
+                            <h:outputLabel />
+
+                            <h:outputLabel value="Leases Price :"/>
+                            <pe:switch id="switch4" value="#{manageMovieController.leasesProductAvailable}">  
+                                <pe:case value="Not Available">  
+                                    <p:inputText id="leasesPriceNotAvailable" readonly="true" size="16"/>
+                                </pe:case>
+                                <pe:case value="Available">  
+                                    <pe:inputNumber id="leasesPriceAvailable" value="#{manageMovieController.leasesProduct.leasesPrice}" symbol="$" minValue="1.0" required="true" requiredMessage="Leases Price cannot be blank !"/>
+                                </pe:case>
+                            </pe:switch>
+                            <h:outputLabel />
+                        </h:panelGrid>
+                    </p:panel>
+                    
+                    <p:commandButton value="Create New" action="#{manageMovieController.createNewMovie}" ajax="true" update=":manageMovieForm, :newMovieForm:newMoviePanel, :newMovieForm:movieMessages" rendered="#{manageMovieController.strAction eq 'Create a new movie'}" />
+                    <p:commandButton value="Cancel" action="#{manageMovieController.cancelCreate}" ajax="true" update=":newMovieForm:newMoviePanel" rendered="#{manageMovieController.strAction eq 'Create a new movie'}" process="@this" />
+                    
+                    <p:commandButton value="Submit" action="#{manageMovieController.editMovie}" ajax="true" update=":manageMovieForm, :newMovieForm:newMoviePanel, :newMovieForm:movieMessages" rendered="#{manageMovieController.strAction eq 'Edit movie details'}" />
+                    <p:commandButton value="Cancel" action="#{manageMovieController.cancelEdit}" ajax="true" update=":newMovieForm:newMoviePanel" rendered="#{manageMovieController.strAction eq 'Edit movie details'}" process="@this" />
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

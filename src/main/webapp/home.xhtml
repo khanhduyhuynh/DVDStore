@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+      
+    <ui:composition template="main.xhtml">
+        <ui:define name="displayData">
+            <h:form id="displayDataForm">
+                       <p:dataGrid id="productDataGrid" var="pro" value="#{categoryMenuModel.lsProducts}" columns="2"
+                                rows="6" paginator="true"
+                                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                rowsPerPageTemplate="6,8,10">
+
+                           <p:panel header="#{pro.title}" style="text-align:center">
+                               <h:panelGrid columns="1" width="100%">
+                                    <p:graphicImage value="/resources/product_images/#{pro.image}" width="200px" height="200px" />
+                                    <h:outputLabel value="Sale Price: #{pro.salesPrice}" rendered="#{pro.salesAvailable eq '1'}" style="font-weight: bold" />
+                                    <h:outputLabel value="Not for sale" rendered="#{pro.salesAvailable eq '0'}" style="font-weight: bold" />
+                                    <h:outputLabel value="Rent Price: #{pro.leasesPrice}" rendered="#{pro.leasesAvailable eq '1'}" style="font-weight: bold" />
+                                    <h:outputLabel value="Not for rent" rendered="#{pro.leasesAvailable eq '0'}" style="font-weight: bold" />
+                                    <p:commandLink action="#{categoryMenuModel.showDetails(pro.PID)}" ajax="true" update=":productForm:displayDataForm">
+                                        <p:graphicImage value="/resources/product_images/compare_prices.gif" width="120px" height="50px" rendered="#{pro.nbrOfBrands > 1}" />
+                                        <p:graphicImage value="/resources/product_images/view_details.gif" width="120px" height="50px" rendered="#{pro.nbrOfBrands == 1}" />
+                                    </p:commandLink> 
+                               </h:panelGrid>
+                            </p:panel>
+
+                        </p:dataGrid>
+                    
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

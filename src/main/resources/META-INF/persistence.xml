@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+
+	<persistence-unit name="DVDStoreWebAppPU" transaction-type="JTA">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <!--<jta-data-source>jdbc/__default</jta-data-source>-->
+        <jta-data-source>jdbc/DVDStoreWebAppDS</jta-data-source>
+
+        <class>com.capstone.Entity.User</class>
+        <class>com.capstone.Entity.Business</class>
+        <class>com.capstone.Entity.Product</class>
+        <class>com.capstone.Entity.SalesProduct</class>
+        <class>com.capstone.Entity.LeasesProduct</class>
+        <class>com.capstone.Entity.Movie</class>
+        <class>com.capstone.Entity.Soundtrack</class>
+        <class>com.capstone.Entity.Game</class>
+        <class>com.capstone.Entity.SystemRequirement</class>
+       
+        <properties>
+	    <property name="eclipselink.ddl-generation" value="create-tables"/>
+	    <property name="eclipselink.logging.level" value="INFO"/>
+        </properties>
+    </persistence-unit>
+
+</persistence>

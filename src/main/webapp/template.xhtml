@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+<title>DVDStore Web App</title>
+<link rel="stylesheet" type="text/css" href="css/styles.css" />
+<style type="text/css">
+    .sample input
+    {
+        width: 70px;
+    }
+</style>
+</h:head>
+<h:body>
+        <div class="wrap">
+            <div class="search">
+                <h:form id="themeForm">
+                    <h:panelGrid columns="3" >
+                        <h:outputText value="Choose Theme:" /> 
+                        <p:themeSwitcher style="width:165px; text-align: center" id="defaultSwitcher" value="#{themesController.theme}">   
+                            <f:selectItems value="#{themesController.themes}" />
+                            <p:ajax listener="#{themesController.saveTheme}" />
+                        </p:themeSwitcher>
+
+                    </h:panelGrid>
+                </h:form>
+                <ui:insert name="search_box">
+                </ui:insert>
+             </div>
+            
+            <div class="header1">
+                <ui:insert name="menu">
+                </ui:insert>
+            </div>
+
+            <div id="banner">
+            	<h:graphicImage value="resources/website_images/Banner.gif" width="1027" height="242"/> 
+                <hr/> 
+            </div>
+               
+             <div class="productInfo_content">
+             	<ui:insert name="content">
+                </ui:insert>
+             </div>
+  
+            <h:form>
+               <div class="footer">
+                    <p id="footer-font"> 
+                    <hr />
+                    <br />
+                    Copyright@ 2012 Joco Wijaya (s0205991) and Khanh Duy Huynh (s0187523). All rights reserved.</p>
+          	</div>
+            </h:form>
+            
+        </div>
+</h:body>
+</html>
